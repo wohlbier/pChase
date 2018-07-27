@@ -20,28 +20,41 @@
 // System includes
 #include <cstdio>
 
+#include "defs.h" //jgw//
 
 //
 // Implementation
 //
 
 Lock::Lock() {
+#ifdef PTHREAD
 	pthread_mutex_init(&(this->mutex), NULL);
+#endif
 }
 
 Lock::~Lock() {
+#ifdef PTHREAD
 	pthread_mutex_destroy(&(this->mutex));
+#endif
 }
 
 void Lock::lock() {
+#ifdef PTHREAD
 	pthread_mutex_lock(&(this->mutex));
+#endif
 }
 
 int Lock::test() {
+#ifdef PTHREAD
 	return pthread_mutex_trylock(&(this->mutex));
+#else
+	return 0;
+#endif
 }
 
 void Lock::unlock() {
+#ifdef PTHREAD
 	pthread_mutex_unlock(&(this->mutex));
+#endif
 }
 

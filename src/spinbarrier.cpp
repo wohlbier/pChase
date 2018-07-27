@@ -20,6 +20,7 @@
 // System includes
 #include <cstdio>
 
+#include "defs.h"
 
 //
 // Implementation
@@ -28,7 +29,9 @@
 // create a new barrier
 SpinBarrier::SpinBarrier(int participants) :
 		limit(participants) {
+#ifdef PTHREAD
 	pthread_barrier_init(&barrier_obj, NULL, this->limit);
+#endif
 }
 
 // destroy an old barrier
@@ -38,5 +41,7 @@ SpinBarrier::~SpinBarrier() {
 // enter the barrier and wait.  everyone leaves
 // when the last participant enters the barrier.
 void SpinBarrier::barrier() {
+#ifdef PTHREAD
 	pthread_barrier_wait(&this->barrier_obj);
+#endif
 }

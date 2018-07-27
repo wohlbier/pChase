@@ -24,7 +24,6 @@
 // Local includes
 #include "lock.h"
 
-
 //
 // Class definition
 //

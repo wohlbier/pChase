@@ -22,9 +22,10 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include "defs.h" //jgw//
+
 Lock Thread::_global_lock;
 int Thread::count = 0;
-
 
 //
 // Implementation
@@ -41,7 +42,14 @@ Thread::~Thread() {
 }
 
 int Thread::start() {
-	return pthread_create(&this->thread, NULL, Thread::start_routine, this);
+#ifdef PTHREAD
+  printf("Using pThreads.\n");
+  return pthread_create(&this->thread, NULL, Thread::start_routine, this);
+#else
+  printf("Not using pThreads.\n");
+  start_routine(this);
+  return 0;
+#endif
 }
 
 void*
@@ -72,27 +80,39 @@ Thread::start_routine(void* p) {
 }
 
 void Thread::exit() {
-	pthread_exit(NULL);
+#ifdef PTHREAD
+  pthread_exit(NULL);
+#endif
 }
 
 int Thread::wait() {
-	pthread_join(this->thread, NULL);
+#ifdef PTHREAD
+  pthread_join(this->thread, NULL);
+#endif
 
 	return 0;
 }
 
 void Thread::lock() {
-	this->object_lock.lock();
+#ifdef PTHREAD
+  this->object_lock.lock();
+#endif
 }
 
 void Thread::unlock() {
-	this->object_lock.unlock();
+#ifdef PTHREAD
+  this->object_lock.unlock();
+#endif
 }
 
 void Thread::global_lock() {
-	Thread::_global_lock.lock();
+#ifdef PTHREAD
+  Thread::_global_lock.lock();
+#endif
 }
 
 void Thread::global_unlock() {
-	Thread::_global_lock.unlock();
+#ifdef PTHREAD
+  Thread::_global_lock.unlock();
+#endif
 }
