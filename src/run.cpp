@@ -1,3 +1,8 @@
+#ifdef __TAU_MANUAL_INST__
+#define TAU_ENABLED 1
+#include <Profile/Profiler.h>
+#line 1 "/home/wohlbier/devel/pChase/src/run.cpp"
+#endif
 /*******************************************************************************
  * Copyright (c) 2006 International Business Machines Corporation.             *
  * All rights reserved. This program and the accompanying materials            *
@@ -30,7 +35,6 @@
 // Local includes
 #include <AsmJit/AsmJit.h>
 #include "timer.h"
-
 
 //
 // Implementation
@@ -178,8 +182,14 @@ int Run::run() {
 		this->bp->barrier();
 
 		// chase pointers
-		for (int i = 0; i < this->exp->iterations; i++)
-			bench((const Chain**) root);
+        for (int i = 0; i < this->exp->iterations; i++)
+#ifdef __TAU_MANUAL_INST__
+	  { TAU_PROFILE("bench [{run.cpp} {188}", " ", TAU_USER);
+#endif
+	        bench((const Chain**) root);
+#ifdef __TAU_MANUAL_INST__
+	  }
+#endif
 
 		// barrier
 		this->bp->barrier();
